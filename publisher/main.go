@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -39,11 +40,16 @@ func publishTicketReceivedEvent(client *redis.Client) error {
 		MaxLenApprox: 0,
 		ID:           "",
 		Values: map[string]interface{}{
-			"whatHappened": string("ticket received"),
+			"whatHappened": string(fmt.Sprintf("ticket received%d", RandBool())),
 			"ticketID":     int(rand.Intn(100000000)),
 			"ticketData":   string("some ticket data"),
 		},
 	}).Err()
 
 	return err
+}
+
+func RandBool() int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(2)
 }
